@@ -58,10 +58,7 @@ namespace DAP_1
 
         private void BaseControl_DrawAfter(object sender, VectorDraw.Render.vdRender render)
         {
-            Graphics gr = this.vdFramedControl1.BaseControl.ActiveDocument.GlobalRenderProperties.GraphicsContext.MemoryGraphics;
-            //  Rectangle rc = new Rectangle(new Point(0, 0), this.vdFramedControl1.BaseControl.ActiveDocument.GlobalRenderProperties.GraphicsContext.MemoryBitmap.Size);
-            //  rc.Inflate(1, 1);
-            // Font font = new Font("Verdana", 20);
+            Graphics gr = this.vdFramedControl1.BaseControl.ActiveDocument.GlobalRenderProperties.GraphicsContext.MemoryGraphics; 
             drawRoute(render);
         }
 
@@ -94,25 +91,7 @@ namespace DAP_1
             }
 
             this.vdFramedControl1.BaseControl.ActiveDocument.Redraw(true);
-
-
-
-
-
-
-            /*
-            if (info.route != null) info.route.Draw(render);
-            List<vdPolyline> polylines = writeTriangle(info.route);
-            foreach (vdPolyline polyline in polylines) polyline.Draw(render);
-
-
-            vdCircle circle11 = new vdCircle(this.vectorDrawBaseControl1.ActiveDocument);
-            circle11.Center = first.getStartPoint();
-            circle11.Radius = 800;
-            circle11.HatchProperties = new VectorDraw.Professional.vdObjects.vdHatchProperties(VectorDraw.Professional.Constants.VdConstFill.VdFillModeSolid);
-            circle11.PenColor.Red = 0; circle11.PenColor.Green = 0; circle11.PenColor.Blue = 255;
-            circle11.Draw(render);
-            */
+             
         }
 
 
@@ -123,66 +102,14 @@ namespace DAP_1
                 foreach (Instrument ins in connector1.instruments)
                 {
                     gPoint gp = connector1.line.getClosestPointTo(ins.centerPoint);
-                    render.DrawLine(null, ins.centerPoint, gp);
+                    render.BkColor = Color.Pink;
+                    render.ColorPalette = VectorDraw.Render.vdRender.ColorDisplay.TrueColor;
+                    var clr = render.GetFinalColor(Color.Pink);
+                    render.DrawLine(this.vdFramedControl1.BaseControl.ActiveDocument, ins.centerPoint, gp);
+
                 }
             }
-
-            //foreach (Node node in this.selectedRoute.nodes)
-            //{
-            //    if (node.nodes.Count > 1)
-            //    {
-            //        //   render.DrawArc(null, node.gp, 0, Math.PI * 2, 600);
-            //    }
-            //}
-
-            //foreach (Instrument instrument in this.selectedRoute.disconnectedInstruments)
-            //{
-            //    //    render.DrawArc(null, instrument.circle.Center, 0, Math.PI * 2, instrument.circle.Radius-50);
-            //}
-
-
-
-            if (mMatrix != null)
-            {
-                for (int i = 0; i < mMatrix.GetLength(0); i++)
-                {
-                    for (int j = 0; j < mMatrix.GetLength(1); j++)
-                    {
-                        if (mMatrix[i, j] < 1000)
-                        {
-                            /*
-                            vdCircle c1 = new vdCircle(this.vdFramedControl1.BaseControl.ActiveDocument, mps[i, j].gp, 200);
-                            vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.AddItem(c1);
-                            c1.SetUnRegisterDocument(vdFramedControl1.BaseControl.ActiveDocument);
-                            c1.setDocumentDefaults();
-                            c1.PenColor = new vdColor(Color.Yellow);
-                            */
-                            render.EdgeColor = Color.Yellow;
-                            render.Update();
-                            //   render.DrawArc(null, mps[i, j].gp, 0, Math.PI * 2, 200);
-                        }
-                        else
-                        {
-                            /*
-                            vdCircle c1 = new vdCircle(this.vdFramedControl1.BaseControl.ActiveDocument, mps[i, j].gp, 200);
-                            vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.AddItem(c1);
-                            c1.SetUnRegisterDocument(vdFramedControl1.BaseControl.ActiveDocument);
-                            c1.setDocumentDefaults();
-                            c1.PenColor = new vdColor(Color.Blue);
-                            */
-                            render.PenStyle.color = Color.Blue;
-                            render.EdgeColor = Color.Blue;
-                            //  render.DrawArc(null, mps[i, j].gp, 0, Math.PI * 2, 100);
-                        }
-                    }
-                }
-            }
-
-
         }
-
-
-
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
 
@@ -202,7 +129,7 @@ namespace DAP_1
             sx = box.Left;
             sy = box.Bottom;
 
-            int wGap = 3000;// 1414;  //1.41421   1414//3000
+            int wGap = 1000;// 1414;  //1.41421   1414//3000
             int hGap = wGap;
             int wc = (int)box.Width / wGap + 1;
             int hc = (int)box.Height / hGap + 1;
@@ -271,16 +198,7 @@ namespace DAP_1
                 }
                 count++;
             }
-
-            /*
-            vdCircle c = new vdCircle(this.vdFramedControl1.BaseControl.ActiveDocument, destination.gridPoint, 200);
-            vdFramedControl1.BaseControl.ActiveDocument.ActiveLayOut.Entities.AddItem(c);
-            c.SetUnRegisterDocument(vdFramedControl1.BaseControl.ActiveDocument);
-            c.setDocumentDefaults();
-            c.PenColor = new vdColor(Color.Blue);
-            */
-
-
+             
             foreach (Instrument ins in this.instruments)
             {
                 minDistance = int.MaxValue;
@@ -295,7 +213,7 @@ namespace DAP_1
                         ins.gridIndex = count;
                         ins.mp = mp;
                     }
-                    if (dis < 3000)
+                    if (dis < 1000)
                     {
                         ins.mps.Add(mp);
                     }
@@ -330,36 +248,6 @@ namespace DAP_1
 
             DisForm disform = new DisForm();
 
-
-            // 거리를 계산 후 가까운 점 부터 
-            /*
-            foreach (Instrument ins in this.instruments)
-            {
-                Point sp1 = new Point(ins.mp.x, ins.mp.y);
-                Point ep1 = new Point(destination.mp.x, destination.mp.y);
-
-                List<Point> resultGP1 = disform.setInit(matrix, sp1, ep1);
-                gPoints gps = new gPoints();
-
-                for (int i = 0; i < resultGP1.Count - 1; i++)
-                {
-                    Point p1 = resultGP1[i];
-                    MatrixPoint m1 = mps[(int)p1.X / 2, (int)p1.Y / 2];
-                    gps.Add(m1.gp);
-                    Point p2 = resultGP1[i + 1];
-                    MatrixPoint m2 = mps[(int)p2.X / 2, (int)p2.Y / 2];
-                    gps.Add(m2.gp);
-                }
-                ins.distanceFromDestination = gps.Length();//hgap wgap
-                ins.point = resultGP1;
-            }
-            this.instruments = this.instruments.OrderBy(x => x.distanceFromDestination).ToList();
-            this.instruments.Reverse();
-            */
-
-            // int cValue =7;
-
-            // Permutation permutation = new Permutation(cValue);
 
             double cou = -1;
 
@@ -429,35 +317,6 @@ namespace DAP_1
                     }
                     route0.setPoints(pList, mps);
                     mainRoutes.Add(route0);
-
-                    // 꺽임 최소화
-                    /*      
-                   SubRoute route1 = FindRoute.findRoute(matrix, route0);
-
-                  if (route1 != null)
-                  {
-                      route1.name = "route1";
-                      route1.setPoints2(    mps);
-
-                      mainRoutes.Add(route1);
-                  }
-                  else {
-                      MessageBox.Show("null");
-                      Console.WriteLine("null");
-                  }
-
-                  route0.gps.Reverse();
-
-                SubRoute route2 = FindRoute.findRoute(matrix, route0);
-           if (route2 != null)
-            {
-                route2.name = "route2";
-                route2.setPoints2(mps);
-                 mainRoutes.Add(route2);
-              }
-
-                  route0.gps.Reverse();
-          */
                 }
 
                 foreach (SubRoute mainRoute in mainRoutes)
@@ -536,7 +395,7 @@ namespace DAP_1
             }
 
             this.routes = this.routes.OrderBy(x => x.bend).ToList();
-            int c = 0;
+        
             foreach (Route route in this.routes)
             {
                 object[] ob = { route, route.getLength(), route.getBendCount() - 1, route.id };
@@ -699,7 +558,7 @@ namespace DAP_1
         {
             foreach (Connector connector1 in this.selectedRoute.disconnectedConnectors)
             {
-                connector1.line.PenColor = new vdColor(Color.White);
+                connector1.line.PenColor = new vdColor(Color.Pink);
                 connector1.line.Update();
             }
             this.selectedRoute.disconnectedConnectors.Clear();
@@ -862,19 +721,8 @@ namespace DAP_1
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            dataGridView1.AutoGenerateColumns = false;
-            string fname;
-            /*
-            string DocPath;
-            
-                object ret = vdFramedControl1.BaseControl.ActiveDocument.GetOpenFileNameDlg(0, "", 0);
-                if (ret == null) return;
-
-                DocPath = ret as string;
-                fname = (string)ret;
-            */
-
-            bool success = vdFramedControl1.BaseControl.ActiveDocument.Open(@"C:\Project\Docs\DAP_1_0531\DAP_1\DAP_1\test3.dwg");
+            dataGridView1.AutoGenerateColumns = false; 
+            bool success = vdFramedControl1.BaseControl.ActiveDocument.Open(@"C:\Project\Docs\DAP_1_0531\DAP_1\DAP_1\test.dwg");
             if (!success) return;
             this.dataGridView1.Rows.Clear();
             instruments.Clear();

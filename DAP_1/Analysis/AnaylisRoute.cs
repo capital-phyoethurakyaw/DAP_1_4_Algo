@@ -183,7 +183,9 @@ namespace DAP_1.Analysis
                     {
                         if (sl.StartPoint.x - el.EndPoint.x == 0 || sl.StartPoint.y - el.EndPoint.y == 0)
                         {
-                            vdLine newLine = new vdLine(doc, new gPoint(sl.StartPoint.x, sl.StartPoint.y), new gPoint(el.EndPoint.x, el.EndPoint.y));
+                            vdLine newLine =  new vdLine(doc, new gPoint(sl.StartPoint.x, sl.StartPoint.y), new gPoint(el.EndPoint.x, el.EndPoint.y));
+                            newLine.PenColor.SystemColor = Color.Pink;
+                            newLine.Update();
                             int index1 = lines.FindIndex(0, l => l.Equals(sl));
                             int index2 = lines.FindIndex(0, l => l.Equals(el));
                             lines.Insert(index1, newLine);
@@ -317,8 +319,11 @@ namespace DAP_1.Analysis
                         if (!(p.x == l1.StartPoint.x && p.y == l1.StartPoint.y) && !(p.x == l1.EndPoint.x && p.y == l1.EndPoint.y))
                         {
                             vdLine sl = new vdLine(doc, l1.StartPoint, p);
+                            sl.PenColor.SystemColor = Color.Pink;
+                            sl.Update();
                             vdLine el = new vdLine(doc, p, l1.EndPoint);
-
+                            sl.PenColor.SystemColor = Color.Pink;
+                            sl.Update();
                             lines.Add(sl);
                             lines.Add(el);
                             lines.Remove(l1);
@@ -328,7 +333,11 @@ namespace DAP_1.Analysis
                         else if (!(p.x == l2.StartPoint.x && p.y == l2.StartPoint.y) && !(p.x == l2.EndPoint.x && p.y == l2.EndPoint.y))
                         {
                             vdLine sl = new vdLine(doc, l2.StartPoint, p);
+                            sl.PenColor.SystemColor = Color.Pink;
+                            sl.Update();
                             vdLine el = new vdLine(doc, p, l2.EndPoint);
+                            el.PenColor.SystemColor = Color.Pink;
+                            el.Update();
                             lines.Add(sl);
                             lines.Add(el);
                             lines.Remove(l2);
@@ -382,7 +391,8 @@ namespace DAP_1.Analysis
 
 
                             vdLine newLine = new vdLine(doc, new gPoint(sl.StartPoint.x, sl.StartPoint.y), new gPoint(el.EndPoint.x, el.EndPoint.y));
-
+                            newLine.PenColor.SystemColor = Color.Pink;
+                            newLine.Update();
                             int index1 = lines.FindIndex(0, l => l.Equals(sl));
                             int index2 = lines.FindIndex(0, l => l.Equals(el));
                                                  lines.Insert(index1, newLine);
